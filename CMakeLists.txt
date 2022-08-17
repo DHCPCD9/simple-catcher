@@ -13,13 +13,14 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(SFML)
-find_package(effolkronium_random REQUIRED)
+add_subdirectory(random)
+
 
 set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-add_executable(app main.cpp utils/utils.hpp utils/utils.cpp objects/TexturedSprite.hpp objects/TexturedSprite.cpp)
+add_executable(app main.cpp utils/utils.hpp utils/utils.cpp objects/TexturedSprite.hpp objects/TexturedSprite.cpp packets/GetProfile.hpp packets/GetProfile.cpp)
 
 target_include_directories(app PUBLIC
                            "${PROJECT_BINARY_DIR}"
@@ -28,8 +29,4 @@ target_include_directories(app PUBLIC
                            assets
                            )
 
-target_link_libraries(app sfml-graphics sfml-audio sfml-main effolkronium_random)
-
-if(MSVC)
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-endif()
+target_link_libraries(app sfml-graphics sfml-audio sfml-network sfml-main effolkronium_random)

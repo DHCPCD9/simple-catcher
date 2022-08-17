@@ -1,0 +1,3 @@
+[submodule "build/Debug/random"]
+	path = build/Debug/random
+	url = https://github.com/effolkronium/random

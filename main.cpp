@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 #include <iostream>
 #include <utils.hpp>
 #include <thread>
 #include "objects/TexturedSprite.hpp"
+#include "packets/GetProfile.hpp"
 #include <effolkronium/random.hpp>
 
 
@@ -16,6 +18,35 @@ using Random = effolkronium::random_static;
 
 
 int main() {
+
+
+    //Connecting to server
+    sf::TcpSocket socket;
+    std::cout << "Connecting to server..." << std::endl;
+
+    sf::Socket::Status status = socket.connect("localhost", 45321);
+
+    if (status != sf::Socket::Done) {
+        std::cout << "Error: " << status << std::endl;
+        return -1;
+    }
+    std::cout << "Connected to server" << std::endl;
+
+    socket.setBlocking(false);
+
+    //Creating packet
+    sf::Packet packet;
+    std::string username = "user-" + std::to_string(Random::get(1, 100));
+    packet >> username; 
+    std::cout << "Sending packet..." << std::endl;
+    if (socket.send(packet) != sf::Socket::Done) {
+        std::cout << "Error: " << status << std::endl;
+        return -1;
+    }
+
+    
+
+    
     
     sf::RenderWindow window(sf::VideoMode(800,600, 32), "Noice");
     window.requestFocus();
@@ -73,10 +104,14 @@ int main() {
     music.play();
     music.setLoop(true);
     music.setVolume(50);
-    
+    char buffer[1024];
+    size_t received;
+    socket.setBlocking(false);
+
 
     while (window.isOpen())
     {
+
         sf::Event event;
 
         while (window.pollEvent(event)) {
